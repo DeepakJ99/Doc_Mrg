@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - MRG Component</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <style>
+        body{
+            background-color: #121212;
+            color:#e6e6e6;
+            display: flex;
+            justify-content: center;
+            font-family: "Source code pro";
+        }
+        .container{
+            width:70%;
+
+        }
+
+        .python-class{
+            color:aqua;
+            text-decoration: underline;
+        }
+        h1{
+            color:#38ff3f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Documentation - MRG Component</h1>
+    <nav>
+        <ul>
+            <li>Bundling</li>
+            <li>Configuration</li>
+        </ul>
+    </nav>
+    <section>
+        <h1>Bundling</h1>
+        <ul>
+            <li>
+                <h3 class = "python-class"> base_bundle.py </h3><p>Base class for any type of bundling</p>
+            </li>
+            <li>
+                <h3 class = "python-class">image.py </h3>
+                <p>Extends BaseBundle, Base class for image bundling</p>
+                
+            </li>
+            
+            
+            <h4>Constructor Args: </h4>
+            <ul>
+                <li>: (String) </li>
+                <li>image_path: (String) </li>
+                <li>do_load_image: (Boolean) </li>
+                <li>do_load_features: (Boolean) </li>
+            </ul>
+            <h4>Instance Args(Other than constructor args):</h4>
+            <ul>
+                <li> config_object : (confobj) configuration object specifies configuration</li>
+                <li> img: (opencv image) actual image that will be loaded lazily using opencv.</li>
+                <li>attr_dict :(dictionary) attirbute directory which is populated later</li>
+                <li>modified: (dictionary) </li>
+                <li>image_sizes:(dictionary) image objects of different sizes, key would be a tuple(height, width), and value corresponding to it would be an image for these dimensions.</li>
+                <li>mask_image_sizes:(dictionary) mask image objects of different sizes</li>
+            </ul>
+            <h4>Methods</h4>
+            <ul>
+                    set_attribute: 
+                        <ul>
+                            <li>Return type:void</li>
+                            <li>Parameters : key, value</li>
+                            <li>Sets a certain attirbute in the attr_dict initialized inside the constructor</li>
+                        </ul>
+                    set_attributes:
+                        <ul>
+                            <li>Return type: void</li>
+                            <li>Parameters: dictionary</li>
+                            <li>Sets multiple attributes at once using the provided dictionary</li>
+
+                        </ul>
+                    get_attribute
+                    <ul>
+                        <li>Return type: String</li>
+                        <li>Paramaters: key</li>
+                        <li>Returns the value mapped to a key supplied as a parameter.</li>
+                    </ul>
+                    do_load_image
+                    <ul>
+                        <li>Return type: Boolean</li>
+                        <li>Parameters : None</li>
+                        <li>Loads an image using the path, also calls for validation using validate_ndims_and_nchannels. </li>
+                    </ul>
+                    validate_ndims_and_nchannels
+                    <ul>
+                        <li>Return type:Image</li>
+                        <li>Parameters: Image</li>
+                        <li>Validates Image. First checks for image dimensions, if number of dimensions is less than 2 or more than 3, raises Exception, else if (nDims == 2 exactly) adds a 3rd axis to the current image. 
+                            Next makes sure that the 3rd axis, which symbolises the
+                            color channels, should be 3(rgb) or 4(rgba) 
+                            returns the resulting image after the validations and transformations.
+                        </li>
+                    </ul>
+                    load_features:
+                    <ul>
+                        <li>Return type: void</li>
+                        <li>
+                            Parameters: none
+                        </li>
+                        <li>
+
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </ul>
+    </section>
+    <section>
+        <h1>Configuration</h1>
+        <ul>
+            <li>
+                <h3 class = "python-class">confobj.py</h3>
+                
+                <p>
+                    Extends Python base class object, Singleton class, spawns up a configuration singleton object.
+                </p>
+                Static/Class variables: 
+                <ul>
+                    <li>_instance : (confobj) keeps the only instance for this class.</li>
+                </ul>
+                Instance variables:
+                <ul>
+                    <li>
+                        __location__ : keeps the location(full acutal path) of the current configuration object file. 
+                        
+                    </li>
+                    <li>config_file: the file <strong>mrg.cfg</strong> that has the actual configuration in json format
+                    </li>
+                    <li>
+                        fconf: stores an instance of features config file(which is also a singleton)
+                    </li>
+                    <li>
+                        model : convolutional network model that is being used (currently it is Caffe), coming from fconf
+                    </li>
+                    <li>
+                        features: model features coming from fconf variable.
+                    </li>
+                    <li>
+                        query: query coming from model.
+                    </li>
+                </ul>
+                Methods: 
+                <ul>
+                    __new__
+                    <ul>
+                        <li>Parameters: none</li>
+                        <li>Return type: confobj</li>
+                        <li>creates an instance(if not already created) of confobj, and assigns it to static _instance variable.</li>
+                    </ul>
+                    verify_model
+                    <ul>
+                        <li>Paramaters: none</li>
+                        <li>Return type : none</li>
+                        <li>Delegates to fconf.verify_model()</li>
+                    </ul>
+                    default_feature
+                    <ul>
+                        <li>Parameters: none</li>
+                        <li>Return type: String (name of model)</li>
+                        <li>Returns the name of the model being employed.</li>
+                    </ul>
+                    feature_dimension
+                    <ul>
+                        <li>Parameters: fname(feature name)</li>
+                        <li>Return type : Integer</li>
+                        <li>Delegates to fconf.feature_dimension(), which in turn returns the dimension of the feature model.</li>
+                    </ul>
+                    load_feature_names
+                    <ul>
+                        <li>Paramters: none</li>
+                        <li>Return type: List</li>
+                        <li>Delegates to process_feature_names and supplies an argument self.features.load to it.</li>
+                    </ul>
+                    process_feature_attr_dict
+                    <ul>
+                        <li>Parameters: feature_attr_dict</li>
+                        <li>Return type: dictionary</li>
+                        <li>Utility function: Dictionary  made out of feature_attr_dict</li>
+                    </ul>
+                    process_feature_names
+                    <ul>
+                        <li>Parameters: fList(list)</li>
+                        <li>Return type: List</li>
+                        <li>Processes the list provided and # Interpret keys with the right feature name. Eg: 'caffe' -> default caffe feature</li>
+                    </ul>
+                    get_conf
+                    <ul>
+                        <li>Parameters: </li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </ul>
+                
+            </li>
+        </ul>
+    </section>
+    </div>
+    
+</body>
+</html>
